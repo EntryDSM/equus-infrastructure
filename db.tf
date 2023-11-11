@@ -8,7 +8,7 @@ locals {
 }
 
 resource "aws_db_subnet_group" "rds" {
-  name = "rds-subnet-group-${module.vpc.vpc_id}"
+  name       = "rds-subnet-group-${module.vpc.vpc_id}"
   subnet_ids = module.vpc.public_subnet_ids
 }
 

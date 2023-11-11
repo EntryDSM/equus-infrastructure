@@ -1,17 +1,17 @@
 locals {
-  azs             = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}c"]
-  public_subnets  = ["10.0.0.0/20", "10.0.16.0/20"]
-  vpc_cidr        = "10.0.0.0/16"
+  azs            = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}c"]
+  public_subnets = ["10.0.0.0/20", "10.0.16.0/20"]
+  vpc_cidr       = "10.0.0.0/16"
 }
 
 module "vpc" {
   source = "./modules/vpc"
 
-  vpc_cidr        = local.vpc_cidr
-  azs             = local.azs
-  public_subnets  = local.public_subnets
-  name_prefix     = local.name_prefix
-  cluster_name    = "${local.name_prefix}-cluster"
+  vpc_cidr       = local.vpc_cidr
+  azs            = local.azs
+  public_subnets = local.public_subnets
+  name_prefix    = local.name_prefix
+  cluster_name   = "${local.name_prefix}-cluster"
 }
 
 resource "aws_vpc_endpoint" "s3" {

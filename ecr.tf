@@ -23,8 +23,8 @@ locals {
 module "stag_ecr" {
   source = "./modules/ecr"
 
-#  for_each = local.stag_ecr_names
-  name     = "user-stag"
+  #  for_each = local.stag_ecr_names
+  name = "user-stag"
 
   image_limit = local.stag_tag_limit
   tag_prefix  = local.stag_tag_prefix
