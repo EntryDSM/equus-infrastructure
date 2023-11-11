@@ -121,4 +121,21 @@ resource "aws_ecs_service" "equus_service" {
   lifecycle {
     ignore_changes = [desired_count, task_definition, capacity_provider_strategy]
   }
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.equus.arn
+  }
+}
+
+resource "aws_service_discovery_service" "equus" {
+  name = lower("${var.service_name}-discovery")
+
+  dns_config {
+    namespace_id = var.namespace_id
+    dns_records {
+      ttl  = 60
+      type = "A"
+    }
+    routing_policy = "MULTIVALUE"
+  }
 }
