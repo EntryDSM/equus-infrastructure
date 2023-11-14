@@ -1,17 +1,19 @@
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity       = 3
+  count = length(var.service_name)
+  max_capacity       = 5
   min_capacity       = 1
-  resource_id        = "service/${aws_ecs_cluster.equus.name}/${aws_ecs_service.equus_service.name}"
+  resource_id        = "service/${aws_ecs_cluster.equus.name}/${aws_ecs_service.equus_service[count.index].name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
 resource "aws_appautoscaling_policy" "ecs_policy_memory" {
+  count = length(var.service_name)
   name               = "memory-autoscaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
-  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+  resource_id        = aws_appautoscaling_target.ecs_target[count.index].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target[count.index].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target[count.index].service_namespace
 
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
@@ -23,11 +25,12 @@ resource "aws_appautoscaling_policy" "ecs_policy_memory" {
 }
 
 resource "aws_appautoscaling_policy" "ecs_policy_cpu" {
+  count = length(var.service_name)
   name               = "cpu-autoscaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
-  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+  resource_id        = aws_appautoscaling_target.ecs_target[count.index].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target[count.index].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target[count.index].service_namespace
 
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {

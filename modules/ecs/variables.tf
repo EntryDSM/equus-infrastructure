@@ -13,16 +13,13 @@ variable "container_port" {
 }
 
 variable "service_name" {
-  type = string
+  type = list(string)
+  default = ["user-stag", "feed-stag"]
 }
 
 variable "host_port" {
   type    = number
   default = 80
-}
-
-variable "repository_url" {
-  type = string
 }
 
 variable "vpc_id" {
@@ -34,5 +31,5 @@ variable "subnet_ids" {
 }
 
 variable "namespace_id" {
-  default = "equus"
+  default = "equus.com"
 }

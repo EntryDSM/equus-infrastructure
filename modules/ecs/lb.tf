@@ -3,26 +3,24 @@ resource "aws_lb" "equus_lb" {
   subnets            = var.subnet_ids
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb.id]
-
-  tags = {
-    Application = var.service_name
-  }
 }
 
 resource "aws_lb_listener" "http_forward" {
+  count = length(var.service_name)
   load_balancer_arn = aws_lb.equus_lb.arn
-  port              = 80
+  port              = 8080 + count.index
   protocol          = "HTTP"
 
   default_action {
     type = "forward"
-    target_group_arn = aws_lb_target_group.equus_tg.arn
+    target_group_arn = aws_lb_target_group.equus_tg[count.index].arn
   }
 }
 
 resource "aws_lb_target_group" "equus_tg" {
-  name        = "${var.service_name}-tg"
-  port        = 80
+  count = length(var.service_name)
+  name        = "${var.service_name[count.index]}-tg"
+  port        = 8080
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
