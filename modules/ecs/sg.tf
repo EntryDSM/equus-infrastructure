@@ -28,6 +28,13 @@ resource "aws_security_group" "ecs_task" {
   name = "ecs-task-sg"
 
   ingress {
+    from_port = 0
+    protocol  = "-1"
+    to_port   = 0
+    self = true
+  }
+
+  ingress {
     from_port = var.host_port
     protocol  = "tcp"
     to_port   = var.container_port
