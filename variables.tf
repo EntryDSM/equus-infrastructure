@@ -8,3 +8,7 @@ variable "path_list" {
     "feed" : ["/faq/**", "/question/**","/faq/**"]
   }
 }
+
+variable "service_names" {
+  default = ["user-stag", "feed-stag"]
+}

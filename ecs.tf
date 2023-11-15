@@ -1,5 +1,5 @@
 locals {
-  service_names   = toset(["user-stag", "feed-stag"])
+  service_names   = var.service_names
 }
 
 module "ecs" {

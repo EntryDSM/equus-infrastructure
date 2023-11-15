@@ -1,10 +1,6 @@
 locals {
   name_prefix = "equus"
-  ecr_names = [
-    "user-stag",
-    "feed-stag",
-    "sidecar-proxy-stag"
-  ]
+  ecr_names = var.service_names
   region = "ap-northeast-2"
 }
 
@@ -20,6 +16,15 @@ locals {
   ])
   prod_tag_prefix = "prod-"
   prod_tag_limit  = 5
+}
+
+module "proxy_ecr" {
+  source = "./modules/ecr"
+
+  name = "sidecar-proxy-stag"
+
+  image_limit = local.stag_tag_limit
+  tag_prefix = local.stag_tag_prefix
 }
 
 module "stag_ecr" {
