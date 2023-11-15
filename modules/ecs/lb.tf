@@ -7,7 +7,27 @@ resource "aws_lb" "equus_lb" {
 
 resource "aws_lb_listener" "http_forward" {
   load_balancer_arn = aws_lb.equus_lb.arn
-  port = 80
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "https_forward" {
+  load_balancer_arn = aws_lb.equus_lb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  certificate_arn   = var.acm_arn
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+
   default_action {
     type = "fixed-response"
 
@@ -21,7 +41,7 @@ resource "aws_lb_listener" "http_forward" {
 
 resource "aws_lb_listener_rule" "equus_listener_rule" {
   count = length(var.service_name)
-  listener_arn = aws_lb_listener.http_forward.arn
+  listener_arn = aws_lb_listener.https_forward.arn
   priority = 50 + count.index
   action {
     type = "forward"

@@ -36,3 +36,5 @@ variable "namespace_id" {
 
 variable "path_list" {
 }
+
+variable "acm_arn" {}
