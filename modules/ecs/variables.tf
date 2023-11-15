@@ -33,3 +33,6 @@ variable "subnet_ids" {
 variable "namespace_id" {
   default = "equus.com"
 }
+
+variable "path_list" {
+}

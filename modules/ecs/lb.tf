@@ -6,14 +6,31 @@ resource "aws_lb" "equus_lb" {
 }
 
 resource "aws_lb_listener" "http_forward" {
-  count = length(var.service_name)
   load_balancer_arn = aws_lb.equus_lb.arn
-  port              = 8080 + count.index
-  protocol          = "HTTP"
-
+  port = 80
   default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "application/json"
+      message_body = "Not Found"
+      status_code  = "404"
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "equus_listener_rule" {
+  count = length(var.service_name)
+  listener_arn = aws_lb_listener.http_forward.arn
+  priority = 50 + count.index
+  action {
     type = "forward"
     target_group_arn = aws_lb_target_group.equus_tg[count.index].arn
+  }
+  condition {
+    path_pattern {
+      values = var.path_list[element(split("-",var.service_name[count.index]),0)]
+    }
   }
 }
 
