@@ -2,7 +2,8 @@ locals {
   name_prefix = "equus"
   ecr_names = [
     "user-stag",
-    "feed-stag"
+    "feed-stag",
+    "sidecar-proxy-stag"
   ]
   region = "ap-northeast-2"
 }

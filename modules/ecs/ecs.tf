@@ -46,8 +46,8 @@ resource "aws_ecs_task_definition" "service" {
 [
   {
     "image": "672628944269.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}:latest",
-    "cpu": 1024,
-    "memory": 2048,
+    "cpu": 512,
+    "memory": 1024,
     "name": "${var.service_name[count.index]}",
     "networkMode": "awsvpc",
     "portMappings": [
@@ -71,6 +71,39 @@ resource "aws_ecs_task_definition" "service" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "equus-log-cluster",
+        "awslogs-region": "ap-northeast-2",
+        "awslogs-create-group": "true",
+        "awslogs-stream-prefix": "role"
+      }
+    }
+  },
+  {
+    "image": "672628944269.dkr.ecr.ap-northeast-2.amazonaws.com/sidecar-proxy-stag:latest",
+    "cpu": 512,
+    "memory": 1024,
+    "name": "equus-sidecar-proxy",
+    "networkMode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": 8888,
+        "hostPort": 8888
+      }
+    ],
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -fLs http://localhost:8888/ > /dev/null || exit 1"
+      ],
+      "interval": 5,
+      "timeout": 2,
+      "retries": 1,
+      "startPeriod": 0
+    },
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "equus-proxy-cluster",
         "awslogs-region": "ap-northeast-2",
         "awslogs-create-group": "true",
         "awslogs-stream-prefix": "role"
@@ -112,7 +145,7 @@ resource "aws_ecs_service" "equus_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.equus_tg[count.index].arn
-    container_name   = var.service_name[count.index]
+    container_name   = "equus-sidecar-proxy"
     container_port   = var.container_port
   }
 

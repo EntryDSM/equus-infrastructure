@@ -9,7 +9,7 @@ variable "tag_name" {
 }
 variable "container_port" {
   type    = number
-  default = 8080
+  default = 8888
 }
 
 variable "service_name" {
