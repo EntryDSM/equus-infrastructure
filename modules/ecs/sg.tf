@@ -55,9 +55,16 @@ resource "aws_security_group" "ecs_task" {
     security_groups = [aws_security_group.lb.id]
   }
   ingress {
-    from_port = var.host_port
+    from_port = 8126
     protocol  = "tcp"
-    to_port   = var.container_port
+    to_port   = 8126
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  ingress {
+    from_port = 5001
+    protocol  = "tcp"
+    to_port   = 5001
     security_groups = [aws_security_group.lb.id]
   }
 

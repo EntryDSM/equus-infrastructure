@@ -38,3 +38,5 @@ variable "path_list" {
 }
 
 variable "acm_arn" {}
+
+variable "DD_API_KEY" {}

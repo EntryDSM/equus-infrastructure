@@ -4,11 +4,15 @@ variable "rds_master_password" {
 
 variable "path_list" {
   default = {
-    "user" : ["/user/**","/admin/**"],
-    "feed" : ["/faq/**", "/question/**","/faq/**"]
+    "user" : ["/user/**","/admin/**","/user","/admin"],
+    "feed" : ["/faq/**", "/question/**","/faq/**","/faq","/question","/faq"]
   }
 }
 
 variable "service_names" {
   default = ["user-stag", "feed-stag"]
+}
+
+variable "dd_api_key" {
+  type = string
 }

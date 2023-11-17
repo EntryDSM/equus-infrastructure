@@ -79,8 +79,8 @@ resource "aws_ecs_task_definition" "service" {
   },
   {
     "image": "672628944269.dkr.ecr.ap-northeast-2.amazonaws.com/sidecar-proxy-stag:latest",
-    "cpu": 512,
-    "memory": 1024,
+    "cpu": 256,
+    "memory": 512,
     "name": "equus-sidecar-proxy",
     "networkMode": "awsvpc",
     "portMappings": [
@@ -104,6 +104,64 @@ resource "aws_ecs_task_definition" "service" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "equus-proxy-cluster",
+        "awslogs-region": "ap-northeast-2",
+        "awslogs-create-group": "true",
+        "awslogs-stream-prefix": "role"
+      }
+    }
+  },
+  {
+    "image" : "public.ecr.aws/datadog/agent:latest",
+    "cpu": 256,
+    "memory": 512,
+    "environment": [
+      {
+        "name": "DD_API_KEY",
+        "value": "${var.DD_API_KEY}"
+      },
+      {
+        "name": "DD_APM_ENABLED",
+        "value": "true"
+      },
+      {
+        "name": "DD_APM_NON_LOCAL_TRAFFIC",
+        "value": "true"
+      },
+      {
+        "name": "DD_LOGS_ENABLED",
+        "value": "true"
+      },
+      {
+        "name": "ECS_FARGATE",
+        "value": "true"
+      },
+      {
+        "name": "DD_SITE",
+        "value": "us5.datadoghq.com"
+      }
+    ],
+    "name": "datadog-agent",
+    "networkMode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": 8126,
+        "hostPort": 8126
+      }
+    ],
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -fLs http://localhost:8126/ > /dev/null || exit 1"
+      ],
+      "interval": 5,
+      "timeout": 2,
+      "retries": 1,
+      "startPeriod": 0
+    },
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "equus-datadog-cluster",
         "awslogs-region": "ap-northeast-2",
         "awslogs-create-group": "true",
         "awslogs-stream-prefix": "role"

@@ -1,5 +1,6 @@
 locals {
   service_names   = var.service_names
+  dd_api_key = var.dd_api_key
 }
 
 module "ecs" {
@@ -9,4 +10,5 @@ module "ecs" {
   subnet_ids     = module.vpc.public_subnet_ids
   path_list = var.path_list
   acm_arn = module.route53.acm_arn
+  DD_API_KEY = local.dd_api_key
 }
