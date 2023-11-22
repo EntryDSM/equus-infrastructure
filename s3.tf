@@ -1,9 +1,11 @@
 locals {
-  lambda_storage_name = "equus-lambda-bucket"
+  bucket_names = toset(["banner-stag"])
+
 }
 
 module "lambda_storage" {
+  for_each = local.bucket_names
   source = "./modules/s3"
 
-  bucket_name = local.lambda_storage_name
+  bucket_name = each.value
 }
