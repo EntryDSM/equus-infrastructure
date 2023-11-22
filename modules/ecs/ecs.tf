@@ -61,10 +61,10 @@ resource "aws_ecs_task_definition" "service" {
         "CMD-SHELL",
         "curl -fLs http://localhost:8080/ > /dev/null || exit 1"
       ],
-      "interval": 5,
-      "timeout": 2,
-      "retries": 1,
-      "startPeriod": 0
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 30
     },
     "essential": true,
     "logConfiguration": {
@@ -120,22 +120,6 @@ resource "aws_ecs_task_definition" "service" {
         "value": "${var.DD_API_KEY}"
       },
       {
-        "name": "DD_APM_ENABLED",
-        "value": "true"
-      },
-      {
-        "name": "DD_APM_NON_LOCAL_TRAFFIC",
-        "value": "true"
-      },
-      {
-        "name": "DD_LOGS_ENABLED",
-        "value": "true"
-      },
-      {
-        "name": "ECS_FARGATE",
-        "value": "true"
-      },
-      {
         "name": "DD_SITE",
         "value": "us5.datadoghq.com"
       }
@@ -149,14 +133,14 @@ resource "aws_ecs_task_definition" "service" {
       }
     ],
     "healthCheck": {
+      "retries": 3,
       "command": [
         "CMD-SHELL",
-        "curl -fLs http://localhost:8126/ > /dev/null || exit 1"
+        "agent health"
       ],
-      "interval": 5,
-      "timeout": 2,
-      "retries": 1,
-      "startPeriod": 0
+      "timeout": 5,
+      "interval": 30,
+      "startPeriod": 15
     },
     "logConfiguration": {
       "logDriver": "awslogs",
