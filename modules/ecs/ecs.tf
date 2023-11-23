@@ -61,10 +61,10 @@ resource "aws_ecs_task_definition" "service" {
         "CMD-SHELL",
         "curl -fLs http://localhost:8080/ > /dev/null || exit 1"
       ],
-      "interval": 30,
+      "interval": 60,
       "timeout": 5,
       "retries": 3,
-      "startPeriod": 30
+      "startPeriod": 60
     },
     "essential": true,
     "logConfiguration": {
