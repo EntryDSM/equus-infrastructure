@@ -7,13 +7,12 @@ variable "path_list" {
     "user" : ["/user/**","/admin/**","/user","/admin"],
     "feed" : ["/faq/**", "/question/**","/faq/**","/faq","/question","/faq"],
     "banner" : ["/banner/**","/banner"],
-    "application" : ["/application/**"],
-    "status" : ["/status/**"]
+    "application" : ["/application/**","/application"]
   }
 }
 
 variable "service_names" {
-  default = ["user-stag", "feed-stag","banner-stag","application-stag","status-stag"]
+  default = ["user-stag", "feed-stag","banner-stag","application-stag"]
 }
 
 variable "dd_api_key" {
