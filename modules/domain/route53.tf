@@ -20,7 +20,7 @@ resource "aws_route53_record" "jenkins" {
   name    = "jenkins.entry-equus.site"
   type    = "A"
   ttl     = "300"
-  records = ["15.164.217.147"]
+  records = [var.jenkins_ip]
 }
 
 resource "aws_route53_record" "cert_validation" {

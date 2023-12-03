@@ -1,5 +1,5 @@
 locals {
-  db_type              = "db.t3.micro"
+  db_type              = "db.t4g.micro"
   db_engine            = "mysql"
   db_storage_size      = 20
   db_username          = "admin"
@@ -38,7 +38,6 @@ resource "aws_db_instance" "equus-db" {
   publicly_accessible    = local.db_public_accessible
   parameter_group_name = aws_db_parameter_group.equus-pg.name
 }
-
 
 resource "aws_db_parameter_group" "equus-pg" {
   name = "rds-max-connection"

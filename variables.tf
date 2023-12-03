@@ -18,3 +18,5 @@ variable "service_names" {
 variable "dd_api_key" {
   type = string
 }
+
+variable "aws_account_id" {}

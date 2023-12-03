@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "assume_role_execution_role" {
 }
 
 resource "aws_iam_role" "execution_role" {
-  name               = "skills-role-execution-role"
+  name               = "role-execution-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_execution_role.json
 }
 
@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "service" {
   container_definitions    = <<DEFINITION
 [
   {
-    "image": "672628944269.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}:latest",
+    "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}:latest",
     "cpu": 512,
     "memory": 1024,
     "name": "${var.service_name[count.index]}",
@@ -78,7 +78,7 @@ resource "aws_ecs_task_definition" "service" {
     }
   },
   {
-    "image": "672628944269.dkr.ecr.ap-northeast-2.amazonaws.com/sidecar-proxy-stag:latest",
+    "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/sidecar-proxy-stag:latest",
     "cpu": 256,
     "memory": 512,
     "name": "equus-sidecar-proxy",

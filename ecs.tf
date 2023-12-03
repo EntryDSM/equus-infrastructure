@@ -11,4 +11,5 @@ module "ecs" {
   path_list = var.path_list
   acm_arn = module.route53.acm_arn
   DD_API_KEY = local.dd_api_key
+  aws_account_id = var.aws_account_id
 }

@@ -40,3 +40,5 @@ variable "path_list" {
 variable "acm_arn" {}
 
 variable "DD_API_KEY" {}
+
+variable "aws_account_id" {}
