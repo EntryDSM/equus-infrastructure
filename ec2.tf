@@ -7,7 +7,7 @@ locals {
 
 module "jenkins" {
   source = "./modules/ec2"
-  ami = local.kafka_ami
+  ami = local.jenkins_ami
   vpc_id = local.equus_vpc
   subnet_id = local.public_subnet_id
   instance_type = "t2.micro"
