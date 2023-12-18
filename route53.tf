@@ -10,5 +10,5 @@ module "route53" {
   domain = local.domain
   lb_dns_name = local.dns_name
   lb_zone_id = local.zone_id
-  jenkins_ip = module.ec2.ec2_public_ip
+  jenkins_ip = module.jenkins.ec2_public_ip
 }

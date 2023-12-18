@@ -15,6 +15,16 @@ resource "aws_security_group" "equus_ec2_sg" {
   vpc_id = var.vpc_id
 }
 
+resource "aws_security_group_rule" "user_ingress" {
+  count = length(var.ingress_rule)
+  type        = "ingress"
+  from_port   = var.ingress_rule[count.index]
+  to_port     = var.ingress_rule[count.index]
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.equus_ec2_sg.id
+}
+
 resource "aws_security_group_rule" "equus_ec2_sg_ingress_ssh" {
   type        = "ingress"
   from_port   = 22
