@@ -62,9 +62,9 @@ resource "aws_ecs_task_definition" "service" {
         "curl -fLs http://localhost:8080/ > /dev/null || exit 1"
       ],
       "interval": 60,
-      "timeout": 5,
+      "timeout": 10,
       "retries": 3,
-      "startPeriod": 60
+      "startPeriod": 90
     },
     "essential": true,
     "logConfiguration": {

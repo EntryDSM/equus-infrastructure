@@ -52,6 +52,6 @@ resource "aws_security_group_rule" "equus_ec2_sg_egress_all" {
   security_group_id = aws_security_group.equus_ec2_sg.id
 }
 
-output "ec2_public_ip" {
-  value = aws_instance.equus.public_ip
+output "ec2_dns" {
+  value = aws_route53_record.equus.name
 }

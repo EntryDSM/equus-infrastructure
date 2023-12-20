@@ -12,3 +12,7 @@ variable "ingress_rule" {
   type = list(string)
   default = []
 }
+
+variable "record_name" {}
+
+variable "zone_id" {}
