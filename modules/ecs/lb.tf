@@ -64,12 +64,12 @@ resource "aws_lb_target_group" "equus_tg" {
 
   health_check {
     enabled             = true
-    interval            = 300
+    interval            = 30
     path                = "/"
-    timeout             = 60
+    timeout             = 5
     matcher             = "200"
     healthy_threshold   = 5
-    unhealthy_threshold = 5
+    unhealthy_threshold = 2
   }
 
   lifecycle {

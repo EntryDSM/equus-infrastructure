@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "service" {
       "interval": 60,
       "timeout": 10,
       "retries": 3,
-      "startPeriod": 90
+      "startPeriod": 120
     },
     "essential": true,
     "logConfiguration": {
@@ -94,10 +94,10 @@ resource "aws_ecs_task_definition" "service" {
         "CMD-SHELL",
         "curl -fLs http://localhost:8888/ > /dev/null || exit 1"
       ],
-      "interval": 5,
-      "timeout": 2,
-      "retries": 1,
-      "startPeriod": 0
+      "interval": 60,
+      "timeout": 10,
+      "retries": 3,
+      "startPeriod": 120
     },
     "essential": true,
     "logConfiguration": {
@@ -138,9 +138,9 @@ resource "aws_ecs_task_definition" "service" {
         "CMD-SHELL",
         "agent health"
       ],
-      "timeout": 5,
-      "interval": 30,
-      "startPeriod": 15
+      "timeout": 10,
+      "interval": 60,
+      "startPeriod": 60
     },
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -176,7 +176,7 @@ resource "aws_ecs_service" "equus_service" {
   name            = "entry-${var.service_name[count.index]}-service"
   cluster         = aws_ecs_cluster.equus.id
   task_definition = aws_ecs_task_definition.service[count.index].arn
-  desired_count   = 1
+  desired_count   = 2
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -189,10 +189,6 @@ resource "aws_ecs_service" "equus_service" {
     target_group_arn = aws_lb_target_group.equus_tg[count.index].arn
     container_name   = "equus-sidecar-proxy"
     container_port   = var.container_port
-  }
-
-  lifecycle {
-    ignore_changes = [desired_count, task_definition, capacity_provider_strategy]
   }
 
   service_registries {
