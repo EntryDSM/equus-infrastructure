@@ -1,6 +1,6 @@
 locals {
-  jenkins_ami = "ami-0686bea6461700cfe"
-  kafka_ami = "ami-0c350b3defb25f10c"
+  jenkins_ami = "ami-0b87469597f2d8862"
+  kafka_ami = "ami-0cfabecf3a486037e"
   equus_vpc = module.vpc.vpc_id
   public_subnet_id = module.vpc.public_subnet_ids[0]
   domain_zone_id = module.route53.domain_zone_id
@@ -15,6 +15,12 @@ module "jenkins" {
   ec2_name = "equus-jenkins-server"
   record_name = "jenkins"
   zone_id = local.domain_zone_id
+
+  user_data = <<-EOF
+      #!/bin/sh
+      systemctl start docker
+      systemctl start jenkins
+EOF
 }
 
 module "kafka" {
@@ -27,4 +33,11 @@ module "kafka" {
   ingress_rule = ["9092"]
   record_name = "kafka"
   zone_id = local.domain_zone_id
+  user_data = <<-EOF
+      #!/bin/sh
+      su ec2-user
+      cd /home/ec2-user/
+      sudo kafka_2.12-2.5.0/bin/zookeeper-server-start.sh -daemon kafka_2.12-2.5.0/config/zookeeper.properties
+      sudo kafka_2.12-2.5.0/bin/kafka-server-start.sh -daemon kafka_2.12-2.5.0/config/server.properties
+EOF
 }

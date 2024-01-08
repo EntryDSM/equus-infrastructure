@@ -12,4 +12,6 @@ module "ecs" {
   acm_arn = module.route53.acm_arn
   DD_API_KEY = local.dd_api_key
   aws_account_id = var.aws_account_id
+  access_key_id = var.access_key_id
+  secret_key_id = var.secret_key_id
 }

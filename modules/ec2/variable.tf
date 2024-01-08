@@ -16,3 +16,5 @@ variable "ingress_rule" {
 variable "record_name" {}
 
 variable "zone_id" {}
+
+variable "user_data" {}

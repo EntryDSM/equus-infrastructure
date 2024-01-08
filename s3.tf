@@ -1,11 +1,9 @@
-#locals {
-#  bucket_names = toset(["banner-stag"])
-#
-#}
-#
-#module "lambda_storage" {
-#  for_each = local.bucket_names
-#  source = "./modules/s3"
-#
-#  bucket_name = each.value
-#}
+locals {
+  equus_bucket_name = "equus-bucket"
+}
+
+module "lambda_storage" {
+  source = "./modules/s3"
+
+  bucket_name = local.equus_bucket_name
+}

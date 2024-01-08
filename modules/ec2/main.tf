@@ -5,6 +5,8 @@ resource "aws_instance" "equus" {
   subnet_id = var.subnet_id
   vpc_security_group_ids = [aws_security_group.equus_ec2_sg.id]
 
+  user_data = var.user_data
+
   tags = {
     Name = var.ec2_name
   }
