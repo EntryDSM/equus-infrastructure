@@ -14,7 +14,6 @@ variable "container_port" {
 
 variable "service_name" {
   type = list(string)
-  default = ["user-stag", "feed-stag"]
 }
 
 variable "host_port" {
