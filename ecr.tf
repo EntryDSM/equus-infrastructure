@@ -1,7 +1,7 @@
 locals {
   name_prefix = "equus"
-  ecr_names = var.service_names
-  region = "ap-northeast-2"
+  ecr_names   = var.service_names
+  region      = "ap-northeast-2"
 }
 
 locals {
@@ -24,14 +24,14 @@ module "proxy_ecr" {
   name = "sidecar-proxy-stag"
 
   image_limit = local.stag_tag_limit
-  tag_prefix = local.stag_tag_prefix
+  tag_prefix  = local.stag_tag_prefix
 }
 
 module "stag_ecr" {
   source = "./modules/ecr"
 
   for_each = local.stag_ecr_names
-  name = each.value
+  name     = each.value
 
   image_limit = local.stag_tag_limit
   tag_prefix  = local.stag_tag_prefix

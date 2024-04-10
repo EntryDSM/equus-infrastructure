@@ -40,14 +40,14 @@ resource "aws_ecs_task_definition" "service" {
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.execution_role.arn
   cpu                      = 1024
-  memory                   = 2048
+  memory                   = 3072
   requires_compatibilities = ["FARGATE"]
   container_definitions    = <<-EOF
   [
   {
     "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}:latest",
     "cpu": 512,
-    "memory": 1024,
+    "memory": 2048,
     "name": "${var.service_name[count.index]}",
     "networkMode": "awsvpc",
     "portMappings": [
@@ -61,10 +61,10 @@ resource "aws_ecs_task_definition" "service" {
         "CMD-SHELL",
         "curl -fLs http://localhost:8080/ > /dev/null || exit 1"
       ],
-      "interval": 60,
+      "interval": 30,
       "timeout": 10,
-      "retries": 3,
-      "startPeriod": 120
+      "retries": 2,
+      "startPeriod": 60
     },
     "essential": true,
     "logConfiguration": {
@@ -94,10 +94,10 @@ resource "aws_ecs_task_definition" "service" {
         "CMD-SHELL",
         "curl -fLs http://localhost:8888/ > /dev/null || exit 1"
       ],
-      "interval": 60,
+      "interval": 30,
       "timeout": 10,
-      "retries": 3,
-      "startPeriod": 120
+      "retries": 2,
+      "startPeriod": 60
     },
     "essential": true,
     "logConfiguration": {
@@ -176,7 +176,7 @@ resource "aws_ecs_service" "equus_service" {
   name            = "entry-${var.service_name[count.index]}-service"
   cluster         = aws_ecs_cluster.equus.id
   task_definition = aws_ecs_task_definition.service[count.index].arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   network_configuration {

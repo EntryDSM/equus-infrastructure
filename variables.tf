@@ -4,15 +4,16 @@ variable "rds_master_password" {
 
 variable "path_list" {
   default = {
-    "user" : ["/user/**","/admin/**","/user","/admin"],
-    "feed" : ["/faq/**", "/question/**","/faq/**","/faq","/question","/faq"],
-    "banner" : ["/banner/**","/banner"],
-    "application" : ["/application/**","/application"]
+    "user" : ["/user/**", "/admin/**"],
+    "feed" : ["/faq/**", "/question/**"],
+    "banner" : ["/banner/**"],
+    "application" : ["/application/**",  "/graduation/**", "/score/**"],
+    "schedule" : ["/schedule/**"]
   }
 }
 
 variable "service_names" {
-  default = ["user-stag", "feed-stag","banner-stag","application-stag"]
+  default = ["user-stag", "feed-stag", "banner-stag", "application-stag", "schedule-stag"]
 }
 
 variable "dd_api_key" {

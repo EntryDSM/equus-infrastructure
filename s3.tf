@@ -1,8 +1,8 @@
 locals {
-  equus_bucket_name = "equus-bucket"
+  equus_bucket_name = "dsm-s3-bucket-entry"
 }
 
-module "lambda_storage" {
+module "entry_storage" {
   source = "./modules/s3"
 
   bucket_name = local.equus_bucket_name

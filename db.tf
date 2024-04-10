@@ -36,11 +36,11 @@ resource "aws_db_instance" "equus-db" {
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   db_subnet_group_name   = local.db_subnet_group_name
   publicly_accessible    = local.db_public_accessible
-  parameter_group_name = aws_db_parameter_group.equus-pg.name
+  parameter_group_name   = aws_db_parameter_group.equus-pg.name
 }
 
 resource "aws_db_parameter_group" "equus-pg" {
-  name = "rds-max-connection"
+  name   = "rds-max-connection"
   family = "mysql8.0"
 
   parameter {

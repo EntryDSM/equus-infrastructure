@@ -1,20 +1,20 @@
 locals {
-  jenkins_ami = "ami-0b87469597f2d8862"
-  kafka_ami = "ami-0cfabecf3a486037e"
-  equus_vpc = module.vpc.vpc_id
+  jenkins_ami      = "ami-0c823b65b247dc8fc"
+  kafka_ami        = "ami-076ecb604c09f5f38"
+  equus_vpc        = module.vpc.vpc_id
   public_subnet_id = module.vpc.public_subnet_ids[0]
-  domain_zone_id = module.route53.domain_zone_id
+  domain_zone_id   = module.route53.domain_zone_id
 }
 
 module "jenkins" {
-  source = "./modules/ec2"
-  ami = local.jenkins_ami
-  vpc_id = local.equus_vpc
-  subnet_id = local.public_subnet_id
-  instance_type = "t2.micro"
-  ec2_name = "equus-jenkins-server"
-  record_name = "jenkins"
-  zone_id = local.domain_zone_id
+  source        = "./modules/ec2"
+  ami           = local.jenkins_ami
+  vpc_id        = local.equus_vpc
+  subnet_id     = local.public_subnet_id
+  instance_type = "t3.medium"
+  ec2_name      = "equus-jenkins-server"
+  record_name   = "jenkins"
+  zone_id       = local.domain_zone_id
 
   user_data = <<-EOF
       #!/bin/sh
@@ -23,17 +23,19 @@ module "jenkins" {
 EOF
 }
 
+
+
 module "kafka" {
-  source = "./modules/ec2"
-  ami = local.kafka_ami
-  vpc_id = local.equus_vpc
-  subnet_id = local.public_subnet_id
+  source        = "./modules/ec2"
+  ami           = local.kafka_ami
+  vpc_id        = local.equus_vpc
+  subnet_id     = local.public_subnet_id
   instance_type = "t3a.medium"
-  ec2_name = "equus-kafka-cluster"
-  ingress_rule = ["9092"]
-  record_name = "kafka"
-  zone_id = local.domain_zone_id
-  user_data = <<-EOF
+  ec2_name      = "equus-kafka-cluster"
+  ingress_rule  = ["9092"]
+  record_name   = "kafka"
+  zone_id       = local.domain_zone_id
+  user_data     = <<-EOF
       #!/bin/sh
       su ec2-user
       cd /home/ec2-user/
