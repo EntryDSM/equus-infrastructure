@@ -9,7 +9,7 @@ variable "tag_name" {
 }
 variable "container_port" {
   type    = number
-  default = 8888
+  default = 8080
 }
 
 variable "service_name" {
@@ -31,9 +31,6 @@ variable "subnet_ids" {
 
 variable "namespace_id" {
   default = "equus.com"
-}
-
-variable "path_list" {
 }
 
 variable "acm_arn" {}

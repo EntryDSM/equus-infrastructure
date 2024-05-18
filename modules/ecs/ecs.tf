@@ -39,14 +39,14 @@ resource "aws_ecs_task_definition" "service" {
   family                   = "${var.service_name[count.index]}-task"
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.execution_role.arn
-  cpu                      = 1024
+  cpu                      = 512
   memory                   = 3072
   requires_compatibilities = ["FARGATE"]
   container_definitions    = <<-EOF
   [
   {
     "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}:latest",
-    "cpu": 512,
+    "cpu": 256,
     "memory": 2048,
     "name": "${var.service_name[count.index]}",
     "networkMode": "awsvpc",
@@ -78,42 +78,9 @@ resource "aws_ecs_task_definition" "service" {
     }
   },
   {
-    "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/sidecar-proxy-stag:latest",
-    "cpu": 256,
-    "memory": 512,
-    "name": "equus-sidecar-proxy",
-    "networkMode": "awsvpc",
-    "portMappings": [
-      {
-        "containerPort": 8888,
-        "hostPort": 8888
-      }
-    ],
-    "healthCheck": {
-      "command": [
-        "CMD-SHELL",
-        "curl -fLs http://localhost:8888/ > /dev/null || exit 1"
-      ],
-      "interval": 30,
-      "timeout": 10,
-      "retries": 2,
-      "startPeriod": 60
-    },
-    "essential": true,
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "equus-proxy-cluster",
-        "awslogs-region": "ap-northeast-2",
-        "awslogs-create-group": "true",
-        "awslogs-stream-prefix": "role"
-      }
-    }
-  },
-  {
     "image" : "public.ecr.aws/datadog/agent:latest",
     "cpu": 256,
-    "memory": 512,
+    "memory": 1024,
     "environment": [
       {
         "name": "DD_API_KEY",
@@ -185,10 +152,13 @@ resource "aws_ecs_service" "equus_service" {
     assign_public_ip = true
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.equus_tg[count.index].arn
-    container_name   = "equus-sidecar-proxy"
-    container_port   = var.container_port
+  dynamic "load_balancer" {
+    for_each = var.service_name[count.index] == "equus-api-gateway-stag" ? [1] : []
+    content {
+      target_group_arn = aws_lb_target_group.equus_tg.arn
+      container_name   = "equus-api-gateway-stag"
+      container_port   = var.container_port
+    }
   }
 
   service_registries {

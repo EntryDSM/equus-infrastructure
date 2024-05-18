@@ -18,15 +18,6 @@ locals {
   prod_tag_limit  = 5
 }
 
-module "proxy_ecr" {
-  source = "./modules/ecr"
-
-  name = "sidecar-proxy-stag"
-
-  image_limit = local.stag_tag_limit
-  tag_prefix  = local.stag_tag_prefix
-}
-
 module "stag_ecr" {
   source = "./modules/ecr"
 

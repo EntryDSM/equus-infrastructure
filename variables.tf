@@ -2,18 +2,8 @@ variable "rds_master_password" {
   type = string
 }
 
-variable "path_list" {
-  default = {
-    "user" : ["/user/**", "/admin/**"],
-    "feed" : ["/faq/**", "/question/**"],
-    "banner" : ["/banner/**"],
-    "application" : ["/application/**",  "/graduation/**", "/score/**"],
-    "schedule" : ["/schedule/**"]
-  }
-}
-
 variable "service_names" {
-  default = ["user-stag", "feed-stag", "banner-stag", "application-stag", "schedule-stag"]
+  default = ["user-stag", "feed-stag", "banner-stag", "application-stag", "schedule-stag", "equus-api-gateway-stag"]
 }
 
 variable "dd_api_key" {

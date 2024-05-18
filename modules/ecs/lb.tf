@@ -40,23 +40,21 @@ resource "aws_lb_listener" "https_forward" {
 }
 
 resource "aws_lb_listener_rule" "equus_listener_rule" {
-  count = length(var.service_name)
   listener_arn = aws_lb_listener.https_forward.arn
-  priority = 50 + count.index
+  priority = 100
   action {
     type = "forward"
-    target_group_arn = aws_lb_target_group.equus_tg[count.index].arn
+    target_group_arn = aws_lb_target_group.equus_tg.arn
   }
   condition {
     path_pattern {
-      values = var.path_list[element(split("-",var.service_name[count.index]),0)]
+      values = ["/**"]
     }
   }
 }
 
 resource "aws_lb_target_group" "equus_tg" {
-  count = length(var.service_name)
-  name        = "${var.service_name[count.index]}-tg"
+  name        = "api-gateway-tg"
   port        = 8080
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -69,7 +67,7 @@ resource "aws_lb_target_group" "equus_tg" {
     timeout             = 5
     matcher             = "200"
     healthy_threshold   = 5
-    unhealthy_threshold = 2
+    unhealthy_threshold = 5
   }
 
   lifecycle {
