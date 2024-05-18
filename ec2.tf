@@ -23,23 +23,21 @@ module "jenkins" {
 EOF
 }
 
-
-
-module "kafka" {
-  source        = "./modules/ec2"
-  ami           = local.kafka_ami
-  vpc_id        = local.equus_vpc
-  subnet_id     = local.public_subnet_id
-  instance_type = "t3a.medium"
-  ec2_name      = "equus-kafka-cluster"
-  ingress_rule  = ["9092"]
-  record_name   = "kafka"
-  zone_id       = local.domain_zone_id
-  user_data     = <<-EOF
-      #!/bin/sh
-      su ec2-user
-      cd /home/ec2-user/
-      sudo kafka_2.12-2.5.0/bin/zookeeper-server-start.sh -daemon kafka_2.12-2.5.0/config/zookeeper.properties
-      sudo kafka_2.12-2.5.0/bin/kafka-server-start.sh -daemon kafka_2.12-2.5.0/config/server.properties
-EOF
-}
+#module "kafka" {
+#  source        = "./modules/ec2"
+#  ami           = local.kafka_ami
+#  vpc_id        = local.equus_vpc
+#  subnet_id     = local.public_subnet_id
+#  instance_type = "t3a.medium"
+#  ec2_name      = "equus-kafka-cluster"
+#  ingress_rule  = ["9092"]
+#  record_name   = "kafka"
+#  zone_id       = local.domain_zone_id
+#  user_data     = <<-EOF
+#      #!/bin/sh
+#      su ec2-user
+#      cd /home/ec2-user/
+#      sudo kafka_2.12-2.5.0/bin/zookeeper-server-start.sh -daemon kafka_2.12-2.5.0/config/zookeeper.properties
+#      sudo kafka_2.12-2.5.0/bin/kafka-server-start.sh -daemon kafka_2.12-2.5.0/config/server.properties
+#EOF
+#}

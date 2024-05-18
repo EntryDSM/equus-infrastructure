@@ -3,7 +3,7 @@ variable "rds_master_password" {
 }
 
 variable "service_names" {
-  default = ["user-stag", "feed-stag", "banner-stag", "application-stag", "schedule-stag", "equus-api-gateway-stag"]
+  default = ["user-stag", "feed-stag", "banner-stag", "application-stag", "schedule-stag", "equus-api-gateway-stag", "status-stag"]
 }
 
 variable "dd_api_key" {
