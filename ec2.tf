@@ -3,7 +3,7 @@ locals {
   kafka_ami        = "ami-076ecb604c09f5f38"
   equus_vpc        = module.vpc.vpc_id
   public_subnet_id = module.vpc.public_subnet_ids[0]
-  domain_zone_id   = module.route53.domain_zone_id
+  domain_zone_id   = module.stag_route53.domain_zone_id
 }
 
 module "jenkins" {

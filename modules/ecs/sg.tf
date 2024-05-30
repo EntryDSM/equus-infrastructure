@@ -1,6 +1,6 @@
 resource "aws_security_group" "lb" {
   vpc_id = var.vpc_id
-  name   = "lb-sg"
+  name   = "lb-sg-${var.environment}"
   ingress {
     from_port = 443
     protocol  = "tcp"
@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "sg_rule" {
 
 resource "aws_security_group" "ecs_task" {
   vpc_id = var.vpc_id
-  name = "ecs-task-sg"
+  name = "ecs-task-sg-${var.environment}"
 
   ingress {
     from_port = 0

@@ -42,3 +42,5 @@ variable "aws_account_id" {}
 variable "access_key_id" {}
 
 variable "secret_key_id" {}
+
+variable "environment" {}

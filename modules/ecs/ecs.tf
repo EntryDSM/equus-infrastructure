@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "assume_role_execution_role" {
 }
 
 resource "aws_iam_role" "execution_role" {
-  name               = "role-execution-role"
+  name               = "role-execution-role-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.assume_role_execution_role.json
 }
 
@@ -39,16 +39,16 @@ resource "aws_ecs_task_definition" "service" {
   family                   = "${var.service_name[count.index]}-task"
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.execution_role.arn
-  cpu                      = 512
-  memory                   = 3072
+  cpu                      = 256
+  memory                   = 2048
   requires_compatibilities = ["FARGATE"]
   container_definitions    = <<-EOF
   [
   {
-    "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}:latest",
-    "cpu": 256,
-    "memory": 2048,
-    "name": "${var.service_name[count.index]}",
+    "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}-${var.environment}:latest",
+    "cpu": 128,
+    "memory": 1536,
+    "name": "${var.service_name[count.index]}-${var.environment}",
     "networkMode": "awsvpc",
     "portMappings": [
       {
@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "service" {
       "interval": 30,
       "timeout": 10,
       "retries": 2,
-      "startPeriod": 60
+      "startPeriod": 150
     },
     "essential": true,
     "logConfiguration": {
@@ -79,8 +79,8 @@ resource "aws_ecs_task_definition" "service" {
   },
   {
     "image" : "public.ecr.aws/datadog/agent:latest",
-    "cpu": 256,
-    "memory": 1024,
+    "cpu": 128,
+    "memory": 512,
     "environment": [
       {
         "name": "DD_API_KEY",
@@ -124,7 +124,7 @@ EOF
 }
 
 resource "aws_ecs_cluster" "equus" {
-  name = "entry-stag-cluster"
+  name = "entry-${var.environment}-cluster"
 }
 
 resource "aws_ecs_cluster_capacity_providers" "equus_workers" {
@@ -140,7 +140,7 @@ resource "aws_ecs_cluster_capacity_providers" "equus_workers" {
 
 resource "aws_ecs_service" "equus_service" {
   count = length(var.service_name)
-  name            = "entry-${var.service_name[count.index]}-service"
+  name            = "entry-${var.service_name[count.index]}-${var.environment}-service"
   cluster         = aws_ecs_cluster.equus.id
   task_definition = aws_ecs_task_definition.service[count.index].arn
   desired_count   = 1
@@ -153,10 +153,10 @@ resource "aws_ecs_service" "equus_service" {
   }
 
   dynamic "load_balancer" {
-    for_each = var.service_name[count.index] == "equus-api-gateway-stag" ? [1] : []
+    for_each = var.service_name[count.index] == "equus-api-gateway-${var.environment}" ? [1] : []
     content {
       target_group_arn = aws_lb_target_group.equus_tg.arn
-      container_name   = "equus-api-gateway-stag"
+      container_name   = "equus-api-gateway-${var.environment}"
       container_port   = var.container_port
     }
   }
@@ -169,7 +169,7 @@ resource "aws_ecs_service" "equus_service" {
 
 resource "aws_service_discovery_service" "equus" {
   count = length(var.service_name)
-  name = lower("${var.service_name[count.index]}-discovery")
+  name = lower("${var.service_name[count.index]}-${var.environment}-discovery")
 
   dns_config {
     namespace_id = aws_service_discovery_private_dns_namespace.equus.id

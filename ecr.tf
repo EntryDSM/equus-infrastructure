@@ -21,8 +21,8 @@ locals {
 module "stag_ecr" {
   source = "./modules/ecr"
 
-  for_each = local.stag_ecr_names
-  name     = each.value
+  count = length(local.service_names)
+  name     = "${local.service_names[count.index]}-prod"
 
   image_limit = local.stag_tag_limit
   tag_prefix  = local.stag_tag_prefix
@@ -31,8 +31,8 @@ module "stag_ecr" {
 module "prod_ecr" {
   source = "./modules/ecr"
 
-  for_each = local.prod_ecr_names
-  name     = each.value
+  count = length(local.service_names)
+  name     = "${local.service_names[count.index]}-prod"
 
   image_limit = local.prod_tag_limit
   tag_prefix  = local.prod_tag_prefix

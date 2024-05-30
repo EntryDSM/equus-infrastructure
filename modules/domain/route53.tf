@@ -1,11 +1,6 @@
-resource "aws_route53_zone" "front" {
-  name = var.domain
-  force_destroy = true
-}
-
 resource "aws_route53_record" "front" {
-  zone_id = aws_route53_zone.front.zone_id
-  name    = var.domain
+  zone_id = var.zone_id
+  name    = "${var.environment}.${var.domain}"
   type    = "A"
 
   alias {
@@ -16,9 +11,9 @@ resource "aws_route53_record" "front" {
 }
 
 resource "aws_route53_record" "cert_validation" {
-  name    = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
-  type    = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
-  zone_id = aws_route53_zone.front.zone_id
-  records = [tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value]
+  name    = tolist(var.domain_validation_options)[0].resource_record_name
+  type    = tolist(var.domain_validation_options)[0].resource_record_type
+  zone_id = var.zone_id
+  records = [tolist(var.domain_validation_options)[0].resource_record_value]
   ttl     = 60
 }

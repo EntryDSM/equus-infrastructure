@@ -1,5 +1,5 @@
 resource "aws_lb" "equus_lb" {
-  name               = "equus-lb"
+  name               = "equus-lb-${var.environment}"
   subnets            = var.subnet_ids
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb.id]
@@ -54,7 +54,7 @@ resource "aws_lb_listener_rule" "equus_listener_rule" {
 }
 
 resource "aws_lb_target_group" "equus_tg" {
-  name        = "api-gateway-tg"
+  name        = "api-gateway-tg-${var.environment}"
   port        = 8080
   protocol    = "HTTP"
   vpc_id      = var.vpc_id

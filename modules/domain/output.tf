@@ -1,7 +1,7 @@
 output "acm_arn" {
-  value = aws_acm_certificate.cert.arn
+  value = var.certificate_arn
 }
 
 output "domain_zone_id" {
-  value = aws_route53_zone.front.zone_id
+  value = var.zone_id
 }
