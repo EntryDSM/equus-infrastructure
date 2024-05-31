@@ -14,6 +14,4 @@ variable "environment" {}
 
 variable "certificate_arn" {}
 
-variable "domain_validation_options" {}
-
 variable "zone_id" {}
