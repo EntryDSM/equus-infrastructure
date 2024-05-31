@@ -1,5 +1,5 @@
 locals {
-  domain   = "entry-equus.site"
+  domain   = "*.entry-equus.site"
   stag_dns_name = module.ecs_stag.lb_dns_name
   stag_zone_id  = module.ecs_stag.lb_zone_id
 
