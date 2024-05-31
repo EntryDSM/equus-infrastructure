@@ -29,10 +29,6 @@ variable "subnet_ids" {
   type = list(string)
 }
 
-variable "namespace_id" {
-  default = "equus.com"
-}
-
 variable "acm_arn" {}
 
 variable "DD_API_KEY" {}
@@ -44,3 +40,5 @@ variable "access_key_id" {}
 variable "secret_key_id" {}
 
 variable "environment" {}
+
+variable "private_dns_namespace_id" {}

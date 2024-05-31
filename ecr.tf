@@ -22,7 +22,7 @@ module "stag_ecr" {
   source = "./modules/ecr"
 
   count = length(local.service_names)
-  name     = "${local.service_names[count.index]}-prod"
+  name     = "${local.service_names[count.index]}-stag"
 
   image_limit = local.stag_tag_limit
   tag_prefix  = local.stag_tag_prefix

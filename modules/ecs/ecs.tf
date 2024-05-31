@@ -36,18 +36,18 @@ resource "aws_iam_role_policy" "execution_role" {
 
 resource "aws_ecs_task_definition" "service" {
   count = length(var.service_name)
-  family                   = "${var.service_name[count.index]}-task"
+  family                   = "${var.service_name[count.index]}-${var.environment}-task"
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.execution_role.arn
-  cpu                      = 256
-  memory                   = 2048
+  cpu                      = 512
+  memory                   = 3072
   requires_compatibilities = ["FARGATE"]
   container_definitions    = <<-EOF
   [
   {
     "image": "${var.aws_account_id}.dkr.ecr.ap-northeast-2.amazonaws.com/${var.service_name[count.index]}-${var.environment}:latest",
-    "cpu": 128,
-    "memory": 1536,
+    "cpu": 256,
+    "memory": 2048,
     "name": "${var.service_name[count.index]}-${var.environment}",
     "networkMode": "awsvpc",
     "portMappings": [
@@ -79,8 +79,8 @@ resource "aws_ecs_task_definition" "service" {
   },
   {
     "image" : "public.ecr.aws/datadog/agent:latest",
-    "cpu": 128,
-    "memory": 512,
+    "cpu": 256,
+    "memory": 1024,
     "environment": [
       {
         "name": "DD_API_KEY",
@@ -153,7 +153,7 @@ resource "aws_ecs_service" "equus_service" {
   }
 
   dynamic "load_balancer" {
-    for_each = var.service_name[count.index] == "equus-api-gateway-${var.environment}" ? [1] : []
+    for_each = var.service_name[count.index] == "equus-api-gateway" ? [1] : []
     content {
       target_group_arn = aws_lb_target_group.equus_tg.arn
       container_name   = "equus-api-gateway-${var.environment}"
@@ -172,7 +172,7 @@ resource "aws_service_discovery_service" "equus" {
   name = lower("${var.service_name[count.index]}-${var.environment}-discovery")
 
   dns_config {
-    namespace_id = aws_service_discovery_private_dns_namespace.equus.id
+    namespace_id = var.private_dns_namespace_id
     dns_records {
       ttl  = 60
       type = "A"
@@ -181,7 +181,3 @@ resource "aws_service_discovery_service" "equus" {
   }
 }
 
-resource "aws_service_discovery_private_dns_namespace" "equus" {
-  name = var.namespace_id
-  vpc  = var.vpc_id
-}

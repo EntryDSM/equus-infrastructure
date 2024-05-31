@@ -20,6 +20,19 @@ resource "aws_acm_certificate" "cert" {
   }
 }
 
+resource "aws_acm_certificate_validation" "cert" {
+  certificate_arn         = aws_acm_certificate.cert.arn
+  validation_record_fqdns = [aws_route53_record.cert_validation.fqdn]
+}
+
+resource "aws_route53_record" "cert_validation" {
+  name    = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
+  type    = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
+  zone_id = aws_route53_zone.front.zone_id
+  records = [tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value]
+  ttl     = 60
+}
+
 module "stag_route53" {
   source = "./modules/domain"
 
@@ -28,7 +41,6 @@ module "stag_route53" {
   lb_zone_id  = local.stag_zone_id
   environment = "stag"
 
-  domain_validation_options = aws_acm_certificate.cert.domain_validation_options
   certificate_arn = aws_acm_certificate.cert.arn
   zone_id = aws_route53_zone.front.zone_id
 }
@@ -41,7 +53,6 @@ module "prod_route53" {
   lb_zone_id  = local.prod_zone_id
   environment = "prod"
 
-  domain_validation_options = aws_acm_certificate.cert.domain_validation_options
   certificate_arn = aws_acm_certificate.cert.arn
   zone_id = aws_route53_zone.front.zone_id
 }
